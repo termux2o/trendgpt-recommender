@@ -116,38 +116,3 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 #===================================== development ====================
-import os
-from dotenv import load_dotenv
-
-load_dotenv()
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'djongo',
-        'NAME': os.getenv("DB_NAME"),
-        'CLIENT': {
-            'host': os.getenv("MONGO_URI"),
-        }
-    }
-}
-from urllib.parse import quote_plus
-
-from decouple import config
-from urllib.parse import quote_plus
-MONGO_USER = "ak2855001"
-MONGO_PASS = "@1234Aakash"  # your actual password
-DB_NAME = "trendgpt"
-
-encoded_password = quote_plus(MONGO_PASS)
-MONGO_HOST = f"mongodb://{MONGO_USER}:{encoded_password}@cluster0-shard-00-00.uu5jv18.mongodb.net:27017,cluster0-shard-00-01.uu5jv18.mongodb.net:27017,cluster0-shard-00-02.uu5jv18.mongodb.net:27017/{DB_NAME}?ssl=true&replicaSet=atlas-xxxx-shard-0&authSource=admin&retryWrites=true&w=majority"
-
-DATABASES = {
-    "default": {
-        "ENGINE": "djongo",
-        "NAME": DB_NAME,
-        "ENFORCE_SCHEMA": False,
-        "CLIENT": {
-            "host": MONGO_HOST
-        },
-    }
-}
