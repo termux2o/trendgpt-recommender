@@ -1,0 +1,44 @@
+Sample document:
+{
+    '_id': ObjectId('68981fd0174dd72479f532d2'),
+    'main_category': 'Tools & Home Improvement',
+    'title': 'Clothes Dryer Drum Slide, General Electric, Hotpoint, WE1M333, WE1M504',
+    'average_rating': 3.5,
+    'rating_number': 18,
+    'features': [],
+    'description': [
+        'Brand new dryer drum slide, replaces General Electric, Hotpoint, RCA, WE1M333, WE1M504.'
+    ],
+    'price': nan,
+    'images': [
+        {
+            'thumb': 'https://m.media-amazon.com/images/I/21HQKcHPIkL._AC_US75_.jpg',
+            'large': 'https://m.media-amazon.com/images/I/21HQKcHPIkL._AC_.jpg',
+            'variant': 'MAIN',
+            'hi_res': 'https://m.media-amazon.com/images/I/51TIpnkrEpL._AC_SL1500_.jpg'
+        }
+    ],
+    'videos': [],
+    'store': 'GE',
+    'categories': ['Appliances', 'Parts & Accessories'],
+    'details': {
+        'Manufacturer': 'RPI',
+        'Part Number': 'WE1M333,',
+        'Item Weight': '0.352 ounces',
+        'Package Dimensions': '5.5 x 4.7 x 0.4 inches',
+        'Item model number': 'WE1M333,',
+        'Is Discontinued By Manufacturer': 'No',
+        'Item Package Quantity': '1',
+        'Batteries Included?': 'No',
+        'Batteries Required?': 'No',
+        'Best Sellers Rank': {
+            'Tools & Home Improvement': 1315213,
+            'Parts & Accessories': 181194
+        },
+        'Date First Available': 'February 25, 2014'
+    },
+    'parent_asin': 'B00IN9AGAE',
+    'bought_together': nan,
+    'subtitle': nan,
+    'author': nan
+}
