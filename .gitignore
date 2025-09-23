@@ -1,3 +1,5 @@
+# environmnet credentials
+/home/itm/Documents/trendgpt-recommender/backend/.env
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]
