@@ -1,0 +1,1 @@
+# Created     __init__.py empty file to Make it a package to be access using from my_utils.mongo_db_class import MongoDBClient
