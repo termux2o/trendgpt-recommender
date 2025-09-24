@@ -25,7 +25,7 @@ class MongoDBClient:
     def connect(self):
         """Connect to MongoDB and select the database."""
         try:
-            self.client = MongoClient(self.connection_string, serverSelectionTimeoutMS=5000)
+            self.client = MongoClient(self.connection_string, serverSelectionTimeoutMS=100000)
             # Trigger server selection to catch connection errors immediately
             self.client.server_info()
             self.db = self.client[self.db_name]
