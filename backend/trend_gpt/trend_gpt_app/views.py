@@ -1,6 +1,6 @@
 import sys
 import os
-
+from math import ceil
 # Get path to backend folder (where manage.py is)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 MY_UTILS_PATH = os.path.join(BASE_DIR, "my_utils")
@@ -76,54 +76,61 @@ def main_categories_api(request):
 
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 @api_view(['POST'])
 def product_category_api(request):
-    """
-    API that takes main_category as input and returns filtered products
-    Uses direct MongoDB query for better performance
-    """
     try:
         main_category = request.data.get('main_category')
-        
+        page = int(request.data.get('page', 1))  # default page 1
+        page_size = int(request.data.get('page_size', 50))  # default 50
+
         if not main_category:
             return Response(
-                {"error": "main_category parameter is required"}, 
+                {"error": "main_category parameter is required"},
                 status=status.HTTP_400_BAD_REQUEST
             )
-        
+
         appliances_collection = mongo_client.get_collection("Appliances")
         appliances_reviews = mongo_client.get_collection("Appliances_reviews")
 
-        # Filter appliances by main_category directly in MongoDB query
-        filtered_appliances = list(appliances_collection.find({"main_category": main_category}))
-        
+        query = {"main_category": main_category}
+
+        # ✅ Fixed: use count_documents instead of cursor.count()
+        total_count = appliances_collection.count_documents(query)
+        total_pages = ceil(total_count / page_size)
+
+        # Apply pagination
+        filtered_appliances = list(
+            appliances_collection.find(query)
+            .skip((page - 1) * page_size)
+            .limit(page_size)
+        )
+
         if not filtered_appliances:
             return Response(
-                {"error": f"No products found for category: {main_category}"}, 
+                {"error": f"No products found for category: {main_category} on page {page}"},
                 status=status.HTTP_404_NOT_FOUND
             )
-        
-        # Get parent_asins for related reviews
+
         parent_asins = [appliance.get('parent_asin') for appliance in filtered_appliances if appliance.get('parent_asin')]
-        
-        # Get reviews for these products
         reviews = list(appliances_reviews.find({"parent_asin": {"$in": parent_asins}})) if parent_asins else []
-        
-        # Clean the documents
+
         filtered_appliances = [clean_document(doc) for doc in filtered_appliances]
         reviews = [clean_document(doc) for doc in reviews]
-        
-        # Serialize
+
         appliances_serialized = MongoDocumentSerializer(filtered_appliances, many=True).data
         reviews_serialized = MongoDocumentSerializer(reviews, many=True).data
-        
-        # Return same structure as recommendations_api
+
         data = {
+            "page": page,
+            "page_size": page_size,
+            "total_pages": total_pages,
+            "total_results": total_count,
             "appliances": appliances_serialized,
             "reviews": reviews_serialized
         }
-        
+
         return Response(data, status=status.HTTP_200_OK)
-        
+
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
