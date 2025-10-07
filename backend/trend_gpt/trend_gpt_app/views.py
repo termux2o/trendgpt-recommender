@@ -12,7 +12,7 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from .serializers import MongoDocumentSerializer
-
+from .Quer_to_json_formatter import QueryFormatter
 # Initialize MongoDB client
 mongo_client = MongoDBClient()
 db = mongo_client.connect()
@@ -134,3 +134,54 @@ def product_category_api(request):
 
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+@api_view(['POST'])
+def search_text(request):
+    try:
+        query_data = request.data.get('query', {})
+        searched_text = query_data.get('searched_text', None)
+        print("search text is:", searched_text)
+
+        # If empty search, return default categories
+        if not searched_text or searched_text.strip() == "":
+            print("empty search")
+            return Response({
+                "searchCategories": [],  # or your default categories
+                "message": "Empty search, returning default categories"
+            }, status=status.HTTP_200_OK)
+
+        # Call QueryFormatter safely
+        formatter = QueryFormatter(searched_text)
+        try:
+            formatted_json = formatter.generate_json()
+        except Exception as fe:
+            print("Formatter error:", fe)
+            formatted_json = []
+
+        print("formatted json is:", formatted_json)
+        category = formatted_json.get('category')           # 'beauty_personal_care'
+        subcategories = formatted_json.get('subcategories') # ['shampoo', 'skincare']
+        price_max = formatted_json.get('price_max')         # None
+        brand = formatted_json.get('brand')                 # 'Dove'
+        tags = formatted_json.get('tags')                   # ['cheap']
+
+        # Example usage
+        print("Category:", category)
+        print("Subcategories:", subcategories)
+        print("Max Price:", price_max)
+        print("Brand:", brand)
+        print("Tags:", tags)
+
+        appliances_collection = mongo_client.get_collection("Appliances")
+        appliances_reviews = mongo_client.get_collection("Appliances_reviews")
+        return Response({
+            "searchCategories": formatted_json or ["example_category_1", "example_category_2"],
+            "message": f"Results for '{searched_text}'"
+        }, status=status.HTTP_200_OK)
+
+    except Exception as e:
+        import traceback
+        print("Exception in search_text:", traceback.format_exc())
+        return Response(
+            {"error": str(e)},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
