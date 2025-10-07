@@ -15,6 +15,107 @@ const SkeletonCard = React.memo(() => (
   </div>
 ));
 
+// ================= Image Zoom Component =================
+const ImageZoom = React.memo(({ imageUrl, alt, containerRef }) => {
+  const [showZoom, setShowZoom] = useState(false);
+  const [lensPosition, setLensPosition] = useState({ left: 0, top: 0 });
+  const zoomRef = useRef(null);
+  const lensRef = useRef(null);
+
+  const handleMouseMove = useCallback((e) => {
+    if (!containerRef.current || !lensRef.current || !zoomRef.current) return;
+
+    const container = containerRef.current;
+    const lens = lensRef.current;
+    const zoom = zoomRef.current;
+    
+    const { left, top, width, height } = container.getBoundingClientRect();
+    const x = e.clientX - left;
+    const y = e.clientY - top;
+
+    // Lens dimensions
+    const lensWidth = lens.offsetWidth;
+    const lensHeight = lens.offsetHeight;
+    
+    // Calculate lens position (center the lens on cursor)
+    let lensX = x - lensWidth / 2;
+    let lensY = y - lensHeight / 2;
+
+    // Constrain lens within container bounds
+    lensX = Math.max(0, Math.min(width - lensWidth, lensX));
+    lensY = Math.max(0, Math.min(height - lensHeight, lensY));
+
+    setLensPosition({ left: lensX, top: lensY });
+
+    // PROPER ZOOM CALCULATION
+    const zoomWidth = zoom.offsetWidth;
+    const zoomHeight = zoom.offsetHeight;
+    
+    // The background image in zoom window is 2x larger than original
+    const bgImageWidth = width * 2;
+    const bgImageHeight = height * 2;
+    
+    // Calculate what percentage the lens position represents
+    const percentX = lensX / (width - lensWidth);
+    const percentY = lensY / (height - lensHeight);
+    
+    // Map that percentage to the zoomed background
+    const bgX = percentX * (bgImageWidth - zoomWidth);
+    const bgY = percentY * (bgImageHeight - zoomHeight);
+
+    zoom.style.backgroundPosition = `-${bgX}px -${bgY}px`;
+  }, [containerRef]);
+
+  const handleMouseEnter = useCallback(() => {
+    setShowZoom(true);
+  }, []);
+
+  const handleMouseLeave = useCallback(() => {
+    setShowZoom(false);
+  }, []);
+
+  return (
+    <>
+      <div 
+        className="zoom-container"
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        onMouseMove={handleMouseMove}
+        ref={containerRef}
+      >
+        <img
+          src={imageUrl}
+          alt={alt}
+          loading="lazy"
+          onError={(e) => { e.target.src = 'https://via.placeholder.com/500x500?text=No+Image'; }}
+        />
+        
+        {showZoom && (
+          <div 
+            ref={lensRef}
+            className="zoom-lens"
+            style={{
+              left: `${lensPosition.left}px`,
+              top: `${lensPosition.top}px`
+            }}
+          />
+        )}
+      </div>
+
+      {showZoom && (
+        <div 
+          ref={zoomRef}
+          className="zoom-window"
+          style={{
+            backgroundImage: `url(${imageUrl})`,
+            backgroundSize: `${containerRef.current?.offsetWidth * 2}px ${containerRef.current?.offsetHeight * 2}px`
+          }}
+        />
+      )}
+    </>
+  );
+});
+
 // ================= Product Card =================
 const ProductCard = React.memo(({ product, onProductClick }) => {
   const handleClick = useCallback(() => onProductClick(product), [product, onProductClick]);
@@ -49,8 +150,14 @@ const ProductCard = React.memo(({ product, onProductClick }) => {
 // ================= Product Modal =================
 const ProductDetailModal = React.memo(({ product, onClose }) => {
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  const modalImageRef = useRef(null);
+  
   useEffect(() => setSelectedImageIndex(0), [product]);
   if (!product) return null;
+
+  const mainImageUrl = product.images?.[selectedImageIndex]?.hi_res || 
+                      product.images?.[selectedImageIndex]?.large || 
+                      'https://via.placeholder.com/500x500?text=No+Image';
 
   return (
     <div className="modal-overlay" onClick={(e) => e.target === e.currentTarget && onClose()}>
@@ -59,10 +166,10 @@ const ProductDetailModal = React.memo(({ product, onClose }) => {
         <div className="product-detail">
           <div className="detail-left">
             <div className="main-image">
-              <img
-                src={product.images?.[selectedImageIndex]?.hi_res || product.images?.[selectedImageIndex]?.large || 'https://via.placeholder.com/500x500?text=No+Image'}
+              <ImageZoom 
+                imageUrl={mainImageUrl}
                 alt={product.title}
-                loading="lazy"
+                containerRef={modalImageRef}
               />
             </div>
             {product.images?.length > 1 && (

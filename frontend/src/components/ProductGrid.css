@@ -401,3 +401,135 @@
     min-width: 70px;
   }
 }
+/* Image Zoom Styles - Only for Modal */
+.zoom-container {
+  position: relative;
+  overflow: hidden;
+  cursor: crosshair;
+  width: 100%;
+  height: 100%;
+}
+
+.zoom-container img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.zoom-lens {
+  position: absolute;
+  width: 150px;
+  height: 150px;
+  border: 2px solid #fff;
+  background: rgba(255, 255, 255, 0.3);
+  pointer-events: none;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  z-index: 10;
+  mix-blend-mode: difference;
+}
+
+.zoom-window {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 400px;
+  height: 400px;
+  border: 1px solid #e0e0e0;
+  background: #fff;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  border-radius: 4px;
+  overflow: hidden;
+  z-index: 1000;
+  pointer-events: none;
+  background-repeat: no-repeat;
+}
+
+/* Modal specific zoom styles */
+.modal-content .main-image {
+  position: relative;
+  width: 100%;
+  max-width: 500px;
+}
+
+.modal-content .zoom-container {
+  height: 400px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+}
+
+.modal-content .zoom-container img {
+  max-height: 400px;
+  width: auto;
+  max-width: 100%;
+}
+
+/* Product card images - NO ZOOM */
+.product-card .product-image {
+  position: relative;
+  overflow: hidden;
+  height: 250px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f8f8f8;
+  border-radius: 8px;
+  padding: 10px;
+}
+
+.product-card .product-image img {
+  max-height: 250px;
+  width: auto;
+  max-width: 100%;
+  cursor: pointer;
+}
+
+/* Hide zoom on mobile for better UX */
+@media (max-width: 768px) {
+  .zoom-window {
+    display: none;
+  }
+  
+  .zoom-lens {
+    display: none;
+  }
+  
+  .modal-content .zoom-container {
+    cursor: default;
+  }
+}
+
+/* Smooth transitions */
+.zoom-lens {
+  transition: all 0.1s ease;
+}
+
+/* Image thumbnails in modal */
+.image-thumbnails {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+  overflow-x: auto;
+  padding: 10px 0;
+}
+
+.thumbnail {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border: 2px solid #e0e0e0;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+}
+
+.thumbnail.active {
+  border-color: #007bff;
+}
+
+.thumbnail:hover {
+  border-color: #007bff;
+}
