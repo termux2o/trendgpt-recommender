@@ -13,11 +13,12 @@ class MongoDBClient:
         self.password = quote_plus(os.getenv("PASS_WORD_MONGO"))
         self.db_name = os.getenv("DB_NAME")
         self.cluster_name = os.getenv("CLUSTER_NAME")
+        self.cluster_app_name = os.getenv("DB_CLUSTER_APP_NAME")
 
         self.connection_string = (
             f"mongodb+srv://{self.user}:{self.password}"
             f"@{self.cluster_name}/{self.db_name}"
-            "?retryWrites=true&w=majority&appName=Cluster0"
+            f"?retryWrites=true&w=majority&appName={self.cluster_app_name}"
         )
         self.client = None
         self.db = None

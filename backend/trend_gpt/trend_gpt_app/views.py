@@ -185,3 +185,78 @@ def search_text(request):
             {"error": str(e)},
             status=status.HTTP_500_INTERNAL_SERVER_ERROR
         )
+# def clean_document(doc):
+#     if not isinstance(doc, dict):
+#         return doc
+
+#     cleaned = {}
+
+#     for key, value in doc.items():
+
+#         # Handle Mongo _id
+#         if key == "_id":
+#             cleaned["_id"] = str(value)
+#             continue
+
+#         # Handle { "$numberInt": "5" }
+#         if isinstance(value, dict) and "$numberInt" in value:
+#             cleaned[key] = int(value["$numberInt"])
+#             continue
+
+#         # Handle { "$numberLong": "160958..." }
+#         if isinstance(value, dict) and "$numberLong" in value:
+#             cleaned[key] = int(value["$numberLong"])
+#             continue
+
+#         # Handle timestamp { "$date": { "$numberLong": ... } }
+#         if isinstance(value, dict) and "$date" in value:
+#             try:
+#                 milli = int(value["$date"]["$numberLong"])
+#                 from datetime import datetime
+#                 cleaned[key] = datetime.fromtimestamp(milli / 1000).isoformat()
+#             except:
+#                 cleaned[key] = None
+#             continue
+
+#         cleaned[key] = value
+
+#     return cleaned
+
+@api_view(['POST'])
+def product_review_list(request):
+    pass
+#     try:
+#         parent_asin = request.data.get("parent_asin")
+#         page = int(request.data.get("page", 1))
+#         page_size = int(request.data.get("page_size", 10))
+
+#         if not parent_asin:
+#             return Response({"error": "parent_asin is required"}, status=400)
+
+#         appliances_reviews = mongo_client.get_collection("Appliances_reviews")
+
+#         query = {"parent_asin": parent_asin}
+
+#         total_results = appliances_reviews.count_documents(query)
+#         total_pages = ceil(total_results / page_size)
+
+#         reviews = list(
+#             appliances_reviews.find(query)
+#             .skip((page - 1) * page_size)
+#             .limit(page_size)
+#         )
+
+#         reviews = [clean_document(r) for r in reviews]
+#         reviews_serialized = MongoDocumentSerializer(reviews, many=True).data
+
+#         return Response({
+#             "parent_asin": parent_asin,
+#             "page": page,
+#             "page_size": page_size,
+#             "total_pages": total_pages,
+#             "total_results": total_results,
+#             "reviews": reviews_serialized,
+#         }, status=200)
+
+#     except Exception as e:
+#         return Response({"error": str(e)}, status=500)

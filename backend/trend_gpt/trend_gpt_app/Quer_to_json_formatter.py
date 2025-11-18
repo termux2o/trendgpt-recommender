@@ -4,16 +4,15 @@ from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 
 # Your existing dictionaries (categories_tags and brands)
 categories_tags = {
-    "electronics": ["mobile", "smartphone", "laptop", "tablet", "camera", "headphones", "audio", "speaker", "charger", "accessories"],
-    "clothing": ["men's wear", "women's wear", "kids wear", "ethnic wear", "casual wear", "formal wear", "t-shirts", "jeans", "shirts", "dresses", "sarees", "kurta"],
-    "footwear_accessories": ["shoes", "sneakers", "sandals", "boots", "bags", "watches", "belts", "caps", "wallets", "sunglasses", "backpacks"],
-    "home_appliances": ["microwave", "refrigerator", "washing machine", "air conditioner", "fan", "heater", "vacuum cleaner", "kettle", "chimney", "iron"],
-    "kitchen": ["cookware", "pressure cooker", "blender", "mixer", "juicer", "gas stove", "knife set", "tupperware", "coffee maker", "grinder"],
-    "beauty_personal_care": ["skincare", "haircare", "makeup", "cosmetics", "fragrance", "soap", "shampoo", "toothpaste", "lotions"],
-    "toys_games": ["puzzles", "board games", "action figures", "lego", "dolls", "toy cars", "educational toys"],
-    "sports_outdoors": ["fitness", "gym equipment", "bicycles", "sports shoes", "treadmill", "cricket", "football", "yoga mat"],
-    "books_media": ["books", "novels", "comics", "magazines", "audiobooks", "music", "digital music", "movies", "video games"],
-    "grocery_fmcg": ["snacks", "beverages", "spices", "dairy", "oil", "flour", "sugar", "pulses", "instant foods"]
+    "All Electronics": ["mobile", "smartphone", "laptop", "tablet", "camera", "headphones", "audio", "speaker", "charger", "accessories"],
+    "AMAZON FASHION": ["men's wear", "women's wear", "kids wear", "ethnic wear", "casual wear", "formal wear", "t-shirts", "jeans", "shirts", "dresses", "sarees", "kurta","shoes", "sneakers", "sandals", "boots", "bags", "watches", "belts", "caps", "wallets", "sunglasses", "backpacks"],
+    "Appliances": ["microwave", "refrigerator", "washing machine", "air conditioner", "fan", "heater", "vacuum cleaner", "kettle", "chimney", "iron"],
+    "Amazon Home": ["cookware", "pressure cooker", "blender", "mixer", "juicer", "gas stove", "knife set", "tupperware", "coffee maker", "grinder"],
+    "All Beauty": ["skincare", "haircare", "makeup", "cosmetics", "fragrance", "soap", "shampoo", "toothpaste", "lotions"],
+    "Toys & Games": ["puzzles", "board games", "action figures", "lego", "dolls", "toy cars", "educational toys"],
+    "Sports & Outdoors": ["fitness", "gym equipment", "bicycles", "sports shoes", "treadmill", "cricket", "football", "yoga mat"],
+    "Books": ["books", "novels", "comics", "magazines", "audiobooks", "music", "digital music", "movies", "video games"],
+    "Grocery": ["snacks", "beverages", "spices", "dairy", "oil", "flour", "sugar", "pulses", "instant foods"]
 }
 
 brands = {
@@ -90,7 +89,7 @@ JSON: """
                 subcategories.extend(matched_keywords)
 
         if not category:
-            category = "electronics"
+            category = "All Electronics"
 
         price_max = None
         patterns = [

@@ -1,0 +1,116 @@
+Short answer: Yes — what you’re building is a Machine-Learning–style system, but not a classical ML model.
+It belongs to a category called “Rule-based Retrieval + Ranking”, which is part of Information Retrieval (IR) — a core component used in many recommendation systems.
+
+Let me break it down clearly:
+
+✅ What You’re Actually Building
+
+You are building:
+
+1. Natural-Language → Structured JSON parser
+
+User writes:
+
+“I want Redmi Notepad under 500$”
+
+You generate:
+
+{
+  "category": "All Electronics",
+  "subcategories": [],
+  "price_max": 500,
+  "brand": "Redmi",
+  "tags": []
+}
+
+
+This is a common ML task, but you’re doing it manually using rules or LLM.
+This part = NLP intent parsing.
+
+2. Smart Querying on MongoDB
+
+Your algorithm:
+
+Search "category" in "main_category"
+
+Regex match "brand" in "title"
+
+Filter by price if price_max
+
+Sort results by "rating_number"
+
+Then sort again by "average_rating"
+
+This part = retrieval + ranking.
+It is NOT classical machine learning (no model training), but it is part of many production recommender systems.
+
+📌 So What Category Does This Fall Into?
+✔ Recommendation System (Retrieval-based)
+
+Specifically:
+
+“Rule-Based Recommendation System with Ranking Heuristics”
+
+You are doing:
+
+keyword extraction
+
+structured query generation
+
+item filtering
+
+ranking by heuristics (rating_number, average_rating)
+
+This is a valid recommendation algorithm but not ML training.
+
+⚡ Want to Make It Actual ML?
+
+Later you could convert it into full ML:
+
+ML Stage 1 — Embedding retrieval
+
+Instead of regex, use dense vector search using:
+
+sentence transformers
+
+MongoDB Atlas Vector Search
+
+OpenAI embeddings (text-embedding-3-large)
+
+ML Stage 2 — Train a ranking model
+
+Use learning-to-rank (LTR):
+
+XGBoostRanker
+
+LightGBM Ranker
+
+Neural ranking models
+
+Personalized ranking
+
+🎯 Your current system is good — and normal for MVP
+
+Every major company starts with:
+
+NLP → JSON
+
+Mongo/SQL filtering
+
+Heuristic sorting
+
+Even Amazon started this way before ML.
+
+🔥 Final Answer
+
+Yes — what you are building qualifies as a simple machine-learning-style recommendation system, but technically it is “rule-based retrieval + heuristic ranking”, not a trained ML model.
+
+But it is the foundation of a full ML recommendation engine.
+
+If you want, I can show you:
+
+✅ Full architecture diagram
+✅ How to turn this into ML in future
+✅ Production-grade algorithm code (Python + Mongo)
+
+Just tell me.
